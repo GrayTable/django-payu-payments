@@ -5,7 +5,7 @@ from decimal import Decimal
 
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.utils.html import escape, format_html, mark_safe
 from django.utils.http import urlencode
 from django.contrib.humanize.templatetags.humanize import intcomma
