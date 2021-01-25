@@ -11,7 +11,9 @@ from django.utils.http import urlencode
 from django.contrib.humanize.templatetags.humanize import intcomma
 
 from jsonfield import JSONField
-from ipware.ip import get_real_ip, get_ip
+# `get_real_ip` and `get_ip` are removed from `ipware` library:
+# https://github.com/un33k/django-ipware/issues/45#issuecomment-421572304
+from ipware.ip import get_client_ip
 
 from . import settings as payu_settings
 
@@ -90,7 +92,7 @@ class Payment(models.Model):
         for p in processed_products:
             total += p['unitPrice'] * p['quantity']
 
-        customer_ip = get_real_ip(request) or get_ip(request)
+        customer_ip = get_client_ip(request)
 
         payment = cls(
             pos_id=payu_settings.PAYU_POS_ID,
