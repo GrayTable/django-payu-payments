@@ -55,6 +55,7 @@ class Payment(models.Model):
     products = JSONField(_('products'), default='', blank=True)
     notes = models.TextField(_('notes'), null=True, blank=True)
     valid_to = models.DateTimeField(_('validity date'), editable=True)
+    pay_url = models.TextField(_('PayU URL'), editable=True, null=True, blank=True)
 
     class Meta:
         app_label = 'payu'
@@ -143,6 +144,7 @@ class Payment(models.Model):
                 redirect_url = response['redirectUri']
 
                 payment.payu_order_id = payu_order_id
+                payment.pay_url = redirect_url
                 payment.save()
 
                 return {
