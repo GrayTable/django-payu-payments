@@ -1,5 +1,7 @@
 import uuid
 import json
+from datetime import timedelta, datetime
+
 import requests
 from decimal import Decimal
 
@@ -52,6 +54,7 @@ class Payment(models.Model):
     description = models.TextField(_('description'), null=True, blank=True)
     products = JSONField(_('products'), default='', blank=True)
     notes = models.TextField(_('notes'), null=True, blank=True)
+    valid_to = models.DateTimeField(_('validity date'), editable=True)
 
     class Meta:
         app_label = 'payu'
@@ -100,7 +103,8 @@ class Payment(models.Model):
             total=total,
             description=description,
             products=json.dumps(processed_products),
-            notes=notes
+            notes=notes,
+            valid_to=datetime.now() + timedelta(seconds=validity_time),
         )
         # not saved yet!
 
