@@ -95,7 +95,7 @@ class Payment(models.Model):
         for p in processed_products:
             total += p['unitPrice'] * p['quantity']
 
-        customer_ip = get_client_ip(request)
+        customer_ip = get_client_ip(request)[0]
 
         payment = cls(
             pos_id=payu_settings.PAYU_POS_ID,
