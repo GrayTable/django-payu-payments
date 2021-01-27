@@ -2,6 +2,7 @@ import uuid
 import json
 from datetime import timedelta, datetime
 
+import pytz
 import requests
 from decimal import Decimal
 
@@ -213,5 +214,7 @@ class Payment(models.Model):
         return self.status in ('CANCELED', 'REJECTED')
 
     def is_valid(self):
-        return self.valid_to >= datetime.now() and self.status in (
-            'NEW', 'PENDING', 'WAITING_FOR_CONFIRMATION')
+        return (
+            self.valid_to >= datetime.now().replace(tzinfo=pytz.UTC)
+            and self.status in ('NEW', 'PENDING', 'WAITING_FOR_CONFIRMATION')
+        )
