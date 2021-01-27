@@ -211,3 +211,7 @@ class Payment(models.Model):
 
     def is_not_successful(self):
         return self.status in ('CANCELED', 'REJECTED')
+
+    def is_valid(self):
+        return self.valid_to >= datetime.now() and self.status in (
+            'NEW', 'PENDING', 'WAITING_FOR_CONFIRMATION')
