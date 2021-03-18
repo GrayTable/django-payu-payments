@@ -21,7 +21,8 @@ from ipware.ip import get_client_ip
 from . import settings as payu_settings
 
 
-ENDPOINT_URL = 'https://secure.payu.com/api/v2_1/orders'
+ORDERS_ENDPOINT_URL = 'https://secure.payu.com/api/v2_1/orders'
+PAYMETHODS_ENDPOINT_URL = 'https://secure.payu.com/api/v2_1/paymethods'
 OAUTH_URL = 'https://secure.payu.com/pl/standard/user/oauth/authorize'
 
 TEST_POS_ID = 145227
@@ -82,6 +83,31 @@ class Payment(models.Model):
             return False
 
     @classmethod
+    def get_payment_methods(cls):
+        """
+        Returns a dictionary containing payment methods
+        data retrieved from the PayU
+
+        SEE: https://developers.payu.com/en/restapi.html#Transparent_retrieve
+        """
+        paymethods_request_headers = {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer {}'.format(cls.get_oauth_token())
+        }
+
+        try:
+            paymethods_request = requests.get(
+                PAYMETHODS_ENDPOINT_URL,
+                headers=paymethods_request_headers
+            )
+            response = paymethods_request.json()
+
+            return response
+
+        except:
+            return False
+
+    @classmethod
     def create(cls, request, description, products, buyer,
                validity_time=payu_settings.PAYU_VALIDITY_TIME, notes=None):
         try:
@@ -135,7 +161,7 @@ class Payment(models.Model):
             }
             try:
                 payment_request = requests.post(
-                    ENDPOINT_URL,
+                    ORDERS_ENDPOINT_URL,
                     json=payment_request_data,
                     headers=payment_request_headers,
                     allow_redirects=False
